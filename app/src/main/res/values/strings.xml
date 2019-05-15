@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">KouKouIT</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- Strings related to login -->
+    <string name="title_activity_basic">BasicActivity</string>
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password </string>
+    <string name="confirm_prompt_password">Confirm Password</string>
+    <string name="action_sign_in">Login or register</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="action_register_short">Register</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="remember_pass">remember password</string>
+
+    <!-- Strings related to logout -->
+    <string name="log_out">退出登录</string>
+</resources>

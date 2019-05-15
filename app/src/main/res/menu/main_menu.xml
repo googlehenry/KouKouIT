@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.koukou.it.MainActivity"
+    >
+    <item
+        android:id="@+id/action_shareto"
+        android:orderInCategory="99"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/menu_action_shareto"
+        android:title="分享"/>
+
+    <item
+        android:id="@+id/action_contactsupport"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/menu_action_contact_support"
+        android:title="客服"/>
+    <!--         android:icon="@drawable/menu_action_search" -->
+    <item
+        android:orderInCategory="1"
+        android:id="@+id/search"
+        android:title="搜一搜"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"/>
+</menu>
