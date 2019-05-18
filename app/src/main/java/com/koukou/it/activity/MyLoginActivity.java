@@ -3,6 +3,7 @@ package com.koukou.it.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +29,6 @@ import okhttp3.Response;
 
 public class MyLoginActivity extends BasicActivity implements View.OnClickListener {
     private static final String TAG = "MyLoginActivity";
-    //SharedPreference
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
 
     //UI
     private AutoCompleteTextView usernameView;
@@ -37,24 +36,27 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
     private Button signInButton;
     private CheckBox remeberPass;
     private TextView registerText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        pref = getSharedPreferences("data", MODE_PRIVATE);
-
         usernameView = findViewById(R.id.username);
         passwordView = findViewById(R.id.password);
         remeberPass = findViewById(R.id.remember_pass);
         registerText = findViewById(R.id.register_text);
-
-        //bind click event
+        progressBar=findViewById(R.id.login_progress);
         signInButton = findViewById(R.id.sign_in_button);
+
         signInButton.setOnClickListener(this);
         registerText.setOnClickListener(this);
 
+        setStoredToViewIfRemember();
+    }
+
+    private void setStoredToViewIfRemember() {
         boolean isRemember = pref.getBoolean("remember_password", false);
         if (isRemember) {
             String username = pref.getString("username", "");
@@ -96,20 +98,6 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    private void storeDataToSharedPreference(String username, String password) {
-        editor = pref.edit();
-        if (remeberPass.isChecked()) {
-            editor.putBoolean("remember_password", true);
-            editor.putString("username", username);
-            editor.putString("password", password);
-        } else {
-            editor.clear();
-        }
-        editor.putString("loginName", username);
-        Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("loginName", ""));
-        editor.apply();
-    }
-
     private boolean isUserNameValid(String username) {
         if (TextUtils.isEmpty(username)) {
             usernameView.setError("username should not be empty!");
@@ -130,6 +118,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
     }
 
     private void isUserExisted(final String username, final String password, final MyLoginActivity activity) {
+        progressBar.setVisibility(View.VISIBLE);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -168,7 +157,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
                 message.what = LOGIN_SUCCEED;
                 handler.sendMessage(message);
             } else {
-                message.what = LOGIN_FAILURE;
+                message.what = LOGIN_FAILED;
                 handler.sendMessage(message);
             }
         } catch (Exception e) {
@@ -176,5 +165,53 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
         }
     }
 
+    public void onCallException() {
+        Message message = new Message();
+        message.what = SERVER_CONNECTION_FAILURE;
+        handler.sendMessage(message);
+    }
+
+    private void storeDataToSharedPreference(String username, String password) {
+        editor = pref.edit();
+        if (remeberPass.isChecked()) {
+            editor.putBoolean("remember_password", true);
+            editor.putString("username", username);
+            editor.putString("password", password);
+        } else {
+            editor.clear();
+        }
+        editor.putString("loginName", username);
+        Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("loginName", ""));
+        editor.apply();
+    }
+
+    public Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case LOGIN_SUCCEED:
+                    hideProgressBar();
+                    onBackPressed();
+                    break;
+                case LOGIN_FAILED:
+                    hideProgressBar();
+                    loginFailed();
+                    break;
+                case SERVER_CONNECTION_FAILURE:
+                    hideProgressBar();
+                    serverConnectFailed();
+                default:
+                    break;
+            }
+        }
+    };
+
+
+    public void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
+    }
+
+    public void loginFailed() {
+        Toast.makeText(this, "用户名或者密码不正确", Toast.LENGTH_SHORT).show();
+    }
 
 }
