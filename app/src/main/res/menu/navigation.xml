@@ -4,15 +4,15 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/bottom_home"
-        android:title="首页" />
+        android:title="写日记" />
     <item
         android:id="@+id/navigation_course"
-        android:icon="@drawable/bottom_courses"
-        android:title="课堂" />
+        android:icon="@drawable/bottom_learning"
+        android:title="我的日记" />
     <item
         android:id="@+id/navigation_learning"
-        android:icon="@drawable/bottom_learning"
-        android:title="学习" />
+        android:icon="@drawable/bottom_courses"
+        android:title="天气" />
     <item
         android:id="@+id/navigation_me"
         android:icon="@drawable/bottom_me"
