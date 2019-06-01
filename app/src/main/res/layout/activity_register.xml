@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:textColor="@color/tab_checked"
+                android:textColor="@color/my_theme_color"
                 android:textSize="18sp"
                 />
 

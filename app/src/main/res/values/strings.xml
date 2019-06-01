@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Strings related to login -->
     <string name="title_activity_basic">BasicActivity</string>
@@ -24,4 +25,5 @@
 
     <!-- Strings related to logout -->
     <string name="log_out">退出登录</string>
+    <string name="title_name">麋鹿日记</string>
 </resources>

@@ -1,12 +1,16 @@
 package com.koukou.it;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,10 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.koukou.it.activity.WeatherActivity;
 import com.koukou.it.fragment.CourseFragment;
 import com.koukou.it.fragment.HomeFragment;
 import com.koukou.it.fragment.LearningFragment;
 import com.koukou.it.fragment.MeFragment;
+import com.koukou.it.gson.Weather;
+import com.koukou.it.util.Constants;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -51,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.CHOOSE_FROM_ALBUM);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, Constants.TAKE_PHOTO);
+        }
         replaceFragment(HomeFragment.getInstance());
 
 
@@ -96,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_contactsupport:
                 Toast.makeText(this, "You clicked action_contactsupport", Toast.LENGTH_SHORT).show();
+                goToWeatherActivity();
                 break;
             case R.id.search:
                 Toast.makeText(this, "You clicked search", Toast.LENGTH_SHORT).show();
@@ -107,5 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    public void goToWeatherActivity() {
+        Intent intent = new Intent(this, WeatherActivity.class);
+        intent.putExtra("weather_id", "CN101020600");
+        startActivity(intent);
     }
 }

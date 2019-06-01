@@ -12,7 +12,7 @@
     <item
         android:id="@+id/navigation_learning"
         android:icon="@drawable/bottom_courses"
-        android:title="天气" />
+        android:title="每日寄语" />
     <item
         android:id="@+id/navigation_me"
         android:icon="@drawable/bottom_me"
