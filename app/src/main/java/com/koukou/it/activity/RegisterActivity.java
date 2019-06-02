@@ -27,6 +27,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
+import com.koukou.it.bean.User;
+import com.koukou.it.util.Constants;
+
 public class RegisterActivity extends BasicActivity implements View.OnClickListener {
     private static final String TAG = "RegisterActivity";
     private EditText usernameView;
@@ -79,7 +82,7 @@ public class RegisterActivity extends BasicActivity implements View.OnClickListe
             public void run() {
                 RequestBody requestBody = RequestBody.create(JSON, userJson);
                 Request request = new Request.Builder()
-                        .url("http://192.168.174.1:8301/api/v1/user")
+                        .url( Constants.USER_SERVER_PREFIX+"api/v1/user")
                         .post(requestBody)
                         .build();
                 try {
@@ -116,10 +119,17 @@ public class RegisterActivity extends BasicActivity implements View.OnClickListe
     public void onRegisterFinish(String response, String username) {
         Message message = new Message();
         Log.d(TAG, "onRegisterFinish: " + response);
-        if ("success".equals(response)) {
-            storeDataToSharedPreference(username);
-            message.what = REGISTER_SUCCEED;
-            handler.sendMessage(message);
+        if (response != null) {
+            try {
+                JSONObject user = new JSONObject(response);
+                String name = user.getString("name");
+                String id = user.getString("id");
+                storeDataToSharedPreference(name, id);
+                message.what = REGISTER_SUCCEED;
+                handler.sendMessage(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             message.what = REGISTER_FAILED;
             handler.sendMessage(message);
@@ -160,15 +170,17 @@ public class RegisterActivity extends BasicActivity implements View.OnClickListe
         Toast.makeText(this, "用户名或者密码不正确", Toast.LENGTH_SHORT).show();
     }
 
-    private void storeDataToSharedPreference(String username) {
+    private void storeDataToSharedPreference(String userName, String userId) {
         editor = pref.edit();
-        editor.putString("loginName", username);
+        editor.putString("loginName", userName);
+        editor.putString("userId", userId);
         editor.apply();
         Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("loginName", ""));
+        Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("userId", ""));
     }
 
-    private void goToMainActivity(){
-        Intent intent=new Intent(this,MainActivity.class);
+    private void goToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

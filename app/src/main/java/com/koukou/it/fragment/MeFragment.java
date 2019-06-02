@@ -60,6 +60,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             case R.id.me_log_out:
                 editor = pref.edit();
                 editor.remove("loginName");
+                editor.remove("userId");
                 editor.apply();
                 Log.d(TAG, "logout, " + pref.getString("loginName", ""));
                 refreshInternal();

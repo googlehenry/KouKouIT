@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.koukou.it.MainActivity;
 import com.koukou.it.R;
+import com.koukou.it.util.Constants;
 
 import org.json.JSONObject;
 
@@ -47,7 +48,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
         passwordView = findViewById(R.id.password);
         remeberPass = findViewById(R.id.remember_pass);
         registerText = findViewById(R.id.register_text);
-        progressBar=findViewById(R.id.login_progress);
+        progressBar = findViewById(R.id.login_progress);
         signInButton = findViewById(R.id.sign_in_button);
 
         signInButton.setOnClickListener(this);
@@ -94,7 +95,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
 
     private void goToRegister() {
         Log.d(TAG, "goToRegister");
-        Intent intent=new Intent(this,RegisterActivity.class);
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
@@ -118,6 +119,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
     }
 
     private void isUserExisted(final String username, final String password, final MyLoginActivity activity) {
+        Log.d(TAG, "check if user is existed in server. username: " + username + " password: " + password);
         progressBar.setVisibility(View.VISIBLE);
         new Thread(new Runnable() {
             @Override
@@ -126,8 +128,10 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
                         .add("username", username)
                         .add("password", password)
                         .build();
+                String url = Constants.USER_SERVER_PREFIX + "api/v1/login";
+                Log.d(TAG, "url: " + url);
                 Request request = new Request.Builder()
-                        .url("http://192.168.174.1:8301/api/v1/login")
+                        .url(url)
                         .post(requestBody)
                         .build();
                 try {
@@ -152,8 +156,9 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
             if (!"".equals(response)) {
                 JSONObject user = new JSONObject(response);
                 String username = user.getString("name");
+                String userId = user.getString("id");
                 Log.d(TAG, "onCallFinish: " + username);
-                storeDataToSharedPreference(username, password);
+                storeDataToSharedPreference(userId, username, password);
                 message.what = LOGIN_SUCCEED;
                 handler.sendMessage(message);
             } else {
@@ -171,7 +176,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
         handler.sendMessage(message);
     }
 
-    private void storeDataToSharedPreference(String username, String password) {
+    private void storeDataToSharedPreference(String userId, String username, String password) {
         editor = pref.edit();
         if (remeberPass.isChecked()) {
             editor.putBoolean("remember_password", true);
@@ -181,6 +186,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
             editor.clear();
         }
         editor.putString("loginName", username);
+        editor.putString("userId", userId);
         Log.d(TAG, "storeDataToSharedPreference: " + pref.getString("loginName", ""));
         editor.apply();
     }
@@ -206,7 +212,7 @@ public class MyLoginActivity extends BasicActivity implements View.OnClickListen
     };
 
 
-    public void hideProgressBar(){
+    public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 

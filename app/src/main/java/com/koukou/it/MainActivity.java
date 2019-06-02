@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public boolean isLogin() {
+    public  boolean isLogin() {
         pref = getSharedPreferences("data", MODE_PRIVATE);
         if (pref.getString("loginName", "") == null) {
             return false;
